@@ -21,6 +21,29 @@ private:
         }
     }
 
+    long long sum(int l, int r, int w) {
+        long long res = 0;
+        if (l == r)
+            return tree[w + r];
+        while (l < r) {
+            if (l % 2 == 1) {
+                res += tree[w + l];
+                l++;
+            }
+            if (r % 2 == 0) {
+                res += tree[w + r];
+                r--;
+            }
+            w /= 2;
+            l /= 2;
+            r /= 2;
+        }
+        if (l == r) {
+            res += tree[w + r];
+        }
+        return res;
+    }
+
 public:
     /// Builds a tree based on the array
     /// \param a vector by which the tree is built
@@ -35,7 +58,7 @@ public:
     /// Changes the value of the variable located at the index index to x
     /// \param index index of the variable to be replaced
     /// \param x the value to change to array
-    void change(int index, int x) {
+    void change(int index, int x) {  //alternative name: set
         int w = size / 2;
         tree[w + index] = x;
         while (w > 1) {
@@ -43,21 +66,33 @@ public:
             tree[w] = tree[w * 2] + tree[w * 2 + 1];
         }
     }
+
+    long long sum(int l, int r) {
+        int w = size / 2;
+        return sum(l, r, w);
+    }
 };
 
 int main() {
     segment_tree st;
-    vector<long long> a = {1, 2, 4, 3, 5, 6, 7, 8};
+    vector<long long> a = {1, 2, 3, 4, 5, 6, 7, 8};
 
     st.build_tree(a);
 
     for (int i = 0; i < st.size; i++)
         cout << st.tree[i] << ' ';
 
-    st.change(0, 2);
+//    st.change(0, 2);
 
-    for (int i = 0; i < st.size; i++)
-        cout << st.tree[i] << ' ';
+    cout << endl;
+
+//    for (int i = 0; i < st.size; i++)
+//        cout << st.tree[i] << ' ';
+
+    int l = 2;//проюлемы с нулем бесконечный цикл //1-2,1-4
+    int r = 3;
+    long long sum = st.sum(l, r);
+    cout << sum;
 
     return 0;
 }
