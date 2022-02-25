@@ -25,6 +25,8 @@ private:
         long long res = 0;
         if (l == r)
             return tree[w + r];
+        if (l == 0 && r + 1 == arraySize)
+            return tree[1];
         while (l < r) {
             if (l % 2 == 1) {
                 res += tree[w + l];
@@ -44,6 +46,21 @@ private:
         return res;
     }
 
+    void set(int i, int j, int k, int w) {
+        for (int l = i; l <= j; l++)
+            tree[w + l] = k;
+        w /= 2;
+        i /= 2;
+        j /= 2;
+        while (w >= 1) {
+            for (int l = i; l <= j; l++)
+                tree[w + l] = tree[(w + l) * 2] + tree[(w + l) * 2 + 1];
+            w /= 2;
+            i /= 2;
+            j /= 2;
+        }
+    }
+
 public:
     /// Builds a tree based on the array
     /// \param a vector by which the tree is built
@@ -58,9 +75,9 @@ public:
     /// Changes the value of the variable located at the index index to x
     /// \param index index of the variable to be replaced
     /// \param x the value to change to array
-    void change(int index, int x) {  //alternative name: set
-        int w = size / 2;
-        tree[w + index] = x;
+    void change(int index, int x) {
+        int w = size / 2 + index;
+        tree[w] = x;
         while (w > 1) {
             w /= 2;
             tree[w] = tree[w * 2] + tree[w * 2 + 1];
@@ -70,6 +87,11 @@ public:
     long long sum(int l, int r) {
         int w = size / 2;
         return sum(l, r, w);
+    }
+
+    void set(int i, int j, int k) {
+        int w = size / 2;
+        set(i, j, k, w);
     }
 };
 
@@ -84,15 +106,12 @@ int main() {
 
 //    st.change(0, 2);
 
+    st.set(1, 4, 5);
     cout << endl;
 
-//    for (int i = 0; i < st.size; i++)
-//        cout << st.tree[i] << ' ';
+    for (int i = 0; i < st.size; i++)
+        cout << st.tree[i] << ' ';
 
-    int l = 2;//проюлемы с нулем бесконечный цикл //1-2,1-4
-    int r = 3;
-    long long sum = st.sum(l, r);
-    cout << sum;
 
     return 0;
 }
